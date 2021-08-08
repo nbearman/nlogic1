@@ -1,0 +1,41 @@
+#move into each folder in the given directory and assemble the program from pro files
+#each should be numbered as a disk block
+for d in $1*; do
+  if [ -d "$d" ]; then
+    echo "entering: $d"
+    cd $d
+    disk_folder_name=${PWD##*/} #crazy thing from stack overflow
+    echo "    removing .nlogs and .asms in $d"
+    rm -f *.asm
+    rm -f *.nlog
+    pro_files=$(find . -type f -name "*.pro")
+    echo "    found .pro files in $d: $pro_files"
+    echo "    running assembler pro"
+    ../../bin/Debug/nlogic_sim.exe pro $pro_files
+    asm_files=$(find . -type f -name "*.nlog")
+    echo "    produced .nlog files: $asm_files"
+    echo "    running assembler"
+    ../../bin/Debug/nlogic_sim.exe assemble $asm_files > $disk_folder_name.asm
+    cd ../..
+  fi
+done
+
+#find all assembled programs and move them into the virtual disk folder
+programs=$(find $1 -type f -name "*.asm")
+for f in $programs; do
+   cp $f virtual_disk/
+done
+
+#move into the virtual disk and break programs up into disk blocks
+cd virtual_disk/
+rm -f *.txt
+for f in *; do
+   number_only=$(echo $f | cut -f 1 -d '.')
+   split -b12288 --numeric-suffixes=$number_only -a 5 --additional-suffix .txt $f ""
+done
+
+#remove the complete programs from the virtual disk folder, leaving only disk blocks
+rm -f *.asm
+
+#move back out into the starting directory
+cd ..

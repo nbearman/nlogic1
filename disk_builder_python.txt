@@ -1,0 +1,38 @@
+#move into each folder in the given directory and assemble the program from pro files
+#each folder should be numbered as a starting disk block
+
+echo "    create virtual_disk/"
+mkdir -p virtual_disk/
+echo "    removing .asm from virtual_disk/"
+cd virtual_disk/
+rm -f *.asm
+cd ..
+
+for d in $1*; do
+  if [ -d "$d" ]; then
+    echo "entering: $d"
+    cd $d
+    disk_folder_name=${PWD##*/} #crazy thing from stack overflow
+    echo "    removing .nlogs and .asms in $d"
+    rm -f *.asm
+    rm -f *.nlog
+    pro_files=$(find . -type f -name "*.pro")
+    echo "    found .pro files in $d: $pro_files"
+    echo "    running PYTHON DEBUG assembler"
+    python3 ../../AssembleDebug.py -p -o ../../DISK_DEBUG/$disk_folder_name $pro_files > ../../virtual_disk/$disk_folder_name.asm
+    cd ../..
+  fi
+done
+
+#move into the virtual disk and break programs up into disk blocks
+cd virtual_disk/
+rm -f *.txt
+for f in *; do
+   number_only=$(echo $f | cut -f 1 -d '.')
+   split -b12288 --numeric-suffixes=$number_only -a 5 --additional-suffix .txt $f ""
+done
+
+#remove the complete programs from the virtual disk folder, leaving only disk blocks
+rm -f *.asm
+
+cd ..

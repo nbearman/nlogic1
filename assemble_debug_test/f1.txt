@@ -1,0 +1,10 @@
+GPA GPB
+//comment 1
+GPC GPD //ALUR ALUM
+FILL0A
+@end
+:end
+7F FLAG
+@@real_end
+::real_end
+AA FLAG

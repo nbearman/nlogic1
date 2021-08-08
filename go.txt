@@ -1,0 +1,5 @@
+echo "creating disk from $1"
+./disk_builder_python.txt $1
+echo "launching $2"
+echo "${@:2}"
+./builder_python.txt "${@:2}"

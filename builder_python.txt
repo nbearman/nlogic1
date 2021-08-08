@@ -1,0 +1,8 @@
+pro_files=$(find $1 -type f -name "*.pro")
+echo "    found files: $pro_files"
+mkdir -p BUILD_DEBUG
+echo "    running python debug assembler"
+python3 AssembleDebug.py -p -o BUILD_DEBUG $pro_files > BUILD_DEBUG/program.asm
+
+echo "    nlogic_sim run:"
+bin/Debug/nlogic_sim.exe run BUILD_DEBUG/program.asm "${@:2}"

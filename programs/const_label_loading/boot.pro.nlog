@@ -1,0 +1,29 @@
+
+
+IADF RBASE
+SKIP PC
+:const
+
+
+RMEM ALUA
+
+
+3D WBASE
+42 WMEM
+
+FD ALUB
+FD ALUB
+
+
+1 ALUM
+ALUR GPA
+
+
+7F FLAG
+
+
+00 00 00 00 00 00 00 00 00 00
+
+
+@const
+00 00 12 34

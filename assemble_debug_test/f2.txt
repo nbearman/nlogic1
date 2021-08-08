@@ -1,0 +1,7 @@
+FILL20 GPA ALUR WMEM WOFST GPG ::real_end 7F 7F DMEM10 99 //nothing left on this line
+//another line here
+GPA
+GPB
+DMEM01
+7F FLAG
+//eol

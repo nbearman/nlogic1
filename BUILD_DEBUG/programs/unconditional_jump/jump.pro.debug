@@ -1,0 +1,13 @@
+-- -- -- -- |	//unconditionally jump straight to destination
+00 00 00 00 |	IADN PC
+00 00 00 02 |	:destination
+-- -- -- -- |	
+-- -- -- -- |	//dont execute this part
+00 00 00 06 |	11 GPF
+00 00 00 08 |	11 GPG
+00 00 00 0A |	11 GPH
+-- -- -- -- |	
+-- -- -- -- |	@destination
+00 00 00 0C |	33 GPA
+00 00 00 0E |	33 GPB
+00 00 00 10 |	33 GPC

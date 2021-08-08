@@ -1,0 +1,19 @@
+﻿Kernel code lives in /os and /os_disk
+    /os contains the entry point, code for before virtual addressing is enabled
+    /os_disk contains the rest of the kernel code, the files the kernel's virtual disk is created from
+/os
+    boot.pro
+        boot entry point
+        set up kernel and first user program page tables
+        kernel and user program entry points from disk
+        initialize and enable the MMU
+/os_disk
+    /64 kernel
+        func.pro
+            helper code for making traditional function calls
+        handler.pro
+            kernel entry point code, just jumps to user entry point
+            interrupt handler code
+            physical page mapping data structure
+            process map data structure
+                

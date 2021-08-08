@@ -1,0 +1,253 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IADF WBASE
+SKIP PC
+00 00 10 00
+
+IADF WMEM
+SKIP PC
+
+80 00 00 02
+
+
+
+IADF WBASE
+SKIP PC
+00 00 20 00
+
+IADF WMEM
+SKIP PC
+
+C0 00 00 03
+
+
+
+04 WOFST 
+IADF WMEM
+SKIP PC
+C0 0F F0 00
+
+
+
+
+
+
+00 WOFST
+IADF WBASE
+SKIP PC
+00 00 50 00
+
+IADF WMEM
+SKIP PC
+
+80 00 00 06
+
+
+
+IADF WBASE
+SKIP PC
+00 00 60 00
+
+IADF WMEM
+SKIP PC
+
+80 00 00 07
+
+
+04 WOFST
+IADF WMEM
+SKIP PC
+
+40 00 00 65
+
+
+
+
+
+
+IADF WBASE
+SKIP PC
+FF 00 00 18
+
+
+00 WOFST
+03 WMEM
+
+
+04 WOFST
+40 WMEM
+
+
+08 WOFST
+00 WMEM
+
+
+0C WOFST
+01 WMEM
+
+
+
+
+
+
+IADF WBASE
+SKIP PC
+FF 00 00 18
+
+
+00 WOFST
+07 WMEM
+
+
+04 WOFST
+64 WMEM
+
+
+08 WOFST
+00 WMEM
+
+
+0C WOFST
+01 WMEM
+
+
+
+
+
+
+
+
+
+IADF RBASE
+SKIP PC
+:MMU_registers
+RMEM WBASE
+
+00 WOFST
+01 WMEM
+
+
+04 WOFST
+
+05 WMEM
+
+
+
+
+
+@@ENABLE_MMU
+
+
+01 ALUA
+
+
+IADF RBASE
+SKIP PC
+:MMU_registers
+
+RMEM WBASE
+
+
+14 WOFST
+01 WMEM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@MMIO_devices
+@MMU_registers
+FF 00 00 00
+
+
+
+
+
+
+
+
+
+
+
+
+7F FLAG
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

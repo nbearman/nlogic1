@@ -1,0 +1,253 @@
+-- -- -- -- |	//IADF WBASE
+-- -- -- -- |	//SKIP PC
+-- -- -- -- |	//FF 00 00 14
+-- -- -- -- |	//
+-- -- -- -- |	////physical page
+-- -- -- -- |	//00 WOFST
+-- -- -- -- |	//01 WMEM
+-- -- -- -- |	//
+-- -- -- -- |	////disk block
+-- -- -- -- |	//04 WOFST
+-- -- -- -- |	////22 WMEM
+-- -- -- -- |	//IADF WMEM
+-- -- -- -- |	//SKIP PC
+-- -- -- -- |	//00 00 30 39
+-- -- -- -- |	//
+-- -- -- -- |	////read/write mode
+-- -- -- -- |	//08 WOFST
+-- -- -- -- |	//00 WMEM
+-- -- -- -- |	//
+-- -- -- -- |	////initiate
+-- -- -- -- |	//0C WOFST
+-- -- -- -- |	//01 WMEM
+-- -- -- -- |	
+-- -- -- -- |	////////////////////////////
+-- -- -- -- |	// End test section
+-- -- -- -- |	////////////////////////////
+-- -- -- -- |	
+-- -- -- -- |	//kernel boot
+-- -- -- -- |	
+-- -- -- -- |	//=========================
+-- -- -- -- |	// physcial memory layout
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 0: [here] boot sequence
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 1: kernel page directory
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 2: kernel page table 0
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 3: kernel page 0, 0x00 00 00 00 in kernel VM
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 4: kernel page 1, MMIO devices, 0x00 00 10 00 in kernel VM
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 5: user page directory
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 6: user page table 0
+-- -- -- -- |	//==========
+-- -- -- -- |	// page 7: user page 0, 0x00 00 00 00 in user VM
+-- -- -- -- |	//==========
+-- -- -- -- |	//=========================
+-- -- -- -- |	
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// intialize kernel memory
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//create a PDE in the kernel's page directory
+00 00 00 00 |	IADF WBASE
+00 00 00 02 |	SKIP PC
+00 00 00 04 |	00 00 10 00
+-- -- -- -- |	
+00 00 00 08 |	IADF WMEM
+00 00 00 0A |	SKIP PC
+-- -- -- -- |	// R !W physical page 2
+00 00 00 0C |	80 00 00 02
+-- -- -- -- |	
+-- -- -- -- |	//create a PTE in the kernel's page table for virtual page 0
+-- -- -- -- |	//the page table is at physical address 00 00 20 00, so write the PTE there
+00 00 00 10 |	IADF WBASE
+00 00 00 12 |	SKIP PC
+00 00 00 14 |	00 00 20 00
+-- -- -- -- |	
+00 00 00 18 |	IADF WMEM
+00 00 00 1A |	SKIP PC
+-- -- -- -- |	// R W physical page 3
+00 00 00 1C |	C0 00 00 03
+-- -- -- -- |	
+-- -- -- -- |	//add another PTE for virtual page 1
+-- -- -- -- |	//map it to the MMIO devices (physical address FF 00 00 00)
+00 00 00 20 |	04 WOFST //(each PTE is 4 bytes, so the next PTE is 00 00 20 04)
+00 00 00 22 |	IADF WMEM
+00 00 00 24 |	SKIP PC
+00 00 00 26 |	C0 0F F0 00
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// initialize user memory
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//create a PDE in the users's page directory (page 5)
+00 00 00 2A |	00 WOFST
+00 00 00 2C |	IADF WBASE
+00 00 00 2E |	SKIP PC
+00 00 00 30 |	00 00 50 00
+-- -- -- -- |	
+00 00 00 34 |	IADF WMEM
+00 00 00 36 |	SKIP PC
+-- -- -- -- |	// R !W physical page 6
+00 00 00 38 |	80 00 00 06
+-- -- -- -- |	
+-- -- -- -- |	//create a PTE in the user page table for virtual page 0
+-- -- -- -- |	//the page table is at physical address 00 00 60 00, so write the PTE there
+00 00 00 3C |	IADF WBASE
+00 00 00 3E |	SKIP PC
+00 00 00 40 |	00 00 60 00
+-- -- -- -- |	
+00 00 00 44 |	IADF WMEM
+00 00 00 46 |	SKIP PC
+-- -- -- -- |	// R !W (resident, clean) physical page 7
+00 00 00 48 |	80 00 00 07
+-- -- -- -- |	
+-- -- -- -- |	//create a PTE in the user page table for virtual page 1, the second instruction page
+00 00 00 4C |	04 WOFST
+00 00 00 4E |	IADF WMEM
+00 00 00 50 |	SKIP PC
+-- -- -- -- |	// !R W (mapped, evicted) disk block 101
+00 00 00 52 |	40 00 00 65
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// load kernel program into memory from disk
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//virtual disk is MMIO device; MMIO devices start at 0xFF 00 00 00
+00 00 00 56 |	IADF WBASE
+00 00 00 58 |	SKIP PC
+00 00 00 5A |	FF 00 00 18
+-- -- -- -- |	
+-- -- -- -- |	//load into physical page 3
+00 00 00 5E |	00 WOFST
+00 00 00 60 |	03 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//read from disk block 64
+00 00 00 62 |	04 WOFST
+00 00 00 64 |	40 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//set read mode by writing 0
+00 00 00 66 |	08 WOFST
+00 00 00 68 |	00 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//initiate the transfer
+00 00 00 6A |	0C WOFST
+00 00 00 6C |	01 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// load user program into memory from disk
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//virtual disk is MMIO device; MMIO devices start at 0xFF 00 00 00
+00 00 00 6E |	IADF WBASE
+00 00 00 70 |	SKIP PC
+00 00 00 72 |	FF 00 00 18
+-- -- -- -- |	
+-- -- -- -- |	//load into physical page 7
+00 00 00 76 |	00 WOFST
+00 00 00 78 |	07 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//read from disk block 100
+00 00 00 7A |	04 WOFST
+00 00 00 7C |	64 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//set read mode by writing 0
+00 00 00 7E |	08 WOFST
+00 00 00 80 |	00 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//initiate the transfer
+00 00 00 82 |	0C WOFST
+00 00 00 84 |	01 WMEM
+-- -- -- -- |	
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// set MMU page directory base registers
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//set the active page directory base register to physical page 1 (kernel page directory)
+-- -- -- -- |	
+-- -- -- -- |	//load address of MMU registers into WBASE
+00 00 00 86 |	IADF RBASE
+00 00 00 88 |	SKIP PC
+00 00 00 8A |	:MMU_registers
+00 00 00 8E |	RMEM WBASE
+-- -- -- -- |	//set offset to active page directory register
+00 00 00 90 |	00 WOFST
+00 00 00 92 |	01 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//set offset to queued page directory register
+00 00 00 94 |	04 WOFST
+-- -- -- -- |	//set the queued page directory base register to physical page 5 (user page directory)
+00 00 00 96 |	05 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// enable MMU
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	@@ENABLE_MMU
+-- -- -- -- |	
+-- -- -- -- |	//set ALU to add mode (pretty sure this instruction is only here as a sentinel for looking at the visualizer)
+00 00 00 98 |	01 ALUA
+-- -- -- -- |	
+-- -- -- -- |	//load address of MMU registers
+00 00 00 9A |	IADF RBASE
+00 00 00 9C |	SKIP PC
+00 00 00 9E |	:MMU_registers
+-- -- -- -- |	
+00 00 00 A2 |	RMEM WBASE
+-- -- -- -- |	
+-- -- -- -- |	//enable the MMU and see what happens
+00 00 00 A4 |	14 WOFST
+00 00 00 A6 |	01 WMEM
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// constants
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	
+-- -- -- -- |	//for now, hard code the physical address of the MMU
+-- -- -- -- |	//also hard code this into the simulation environment
+-- -- -- -- |	//TODO figure out how to choose an address for the MMU and communicate it to the kernel during boot
+-- -- -- -- |	@MMIO_devices
+-- -- -- -- |	@MMU_registers
+00 00 00 A8 |	FF 00 00 00
+-- -- -- -- |	//00 active page dir base addr
+-- -- -- -- |	//04 queued page dir base addr
+-- -- -- -- |	//08 virtual addr mmu breakpoint
+-- -- -- -- |	//0C faulted pte
+-- -- -- -- |	//10 breakpoint enabled
+-- -- -- -- |	//14 enabled
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//end of boot
+-- -- -- -- |	//halt the processor
+00 00 00 AC |	7F FLAG
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// Physical page 3
+-- -- -- -- |	// Kernel virtual address 0x00 00 00 00
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// kernel entry point
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// interrupt handler
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	
+-- -- -- -- |	//=========================================================================
+-- -- -- -- |	// user program
+-- -- -- -- |	//=========================================================================
