@@ -27,15 +27,15 @@ Documentation and an online demo of a simpler version of the simulator is availa
 
 
 ### Some interesting files
-- [`AssembleDebug.py`](https://github.com/nbearman/nlogic/blob/master/AssembleDebug.py)
+- [`AssembleDebug.py`](https://github.com/nbearman/nlogic1/blob/master/AssembleDebug.py)
   - The newest version of the assembler; besides bytecode, can also output debug versions of the source files, annotated with the virtual address on each line
-- [`processor/Processor3.cs`](https://github.com/nbearman/nlogic/blob/master/processor/Processor3.cs)
+- [`processor/Processor3.cs`](https://github.com/nbearman/nlogic1/blob/master/processor/Processor3.cs)
   - Main instruction execution logic
-- [`simluation_environment/SimulationEnvironment.cs`](https://github.com/nbearman/nlogic/blob/master/simulation_environment/SimulationEnvironment.cs)
+- [`simluation_environment/SimulationEnvironment.cs`](https://github.com/nbearman/nlogic1/blob/master/simulation_environment/SimulationEnvironment.cs)
   - Interconnect between the processor, memory, input/output devices, and other hardware on in the system
-- [`devices/MemoryManagementUnit.cs`](https://github.com/nbearman/nlogic/blob/master/devices/MemoryManagementUnit.cs)
+- [`devices/MemoryManagementUnit.cs`](https://github.com/nbearman/nlogic1/blob/master/devices/MemoryManagementUnit.cs)
   - The memory management unit (MMU), virtual device that underpins virtual memory
-- [`/DISK_DEBUG/`](https://github.com/nbearman/nlogic/tree/master/DISK_DEBUG/64)
+- [`/DISK_DEBUG/`](https://github.com/nbearman/nlogic1/tree/master/DISK_DEBUG/64)
   - Example output of the debug disk builder, which creates the virtual storage for the system and annotates source files
-- [`documentation/Readme.txt`](https://github.com/nbearman/nlogic/blob/master/documentation/Readme.txt)
+- [`documentation/Readme.txt`](https://github.com/nbearman/nlogic1/blob/master/documentation/Readme.txt)
   - Some information for running the bash scripts to develop for `nlogic`; originally notes for myself, they aren't very thorough guides
